@@ -1,0 +1,53 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * Generated with the TypeScript template
+ * https://github.com/react-native-community/react-native-template-typescript
+ *
+ * @format
+ */
+
+import * as React from 'react';
+
+import Login from './pages/Login';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ForgotPassword from './pages/ForgotPassword';
+import { RootStackParamList } from './_app';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const App = () => {
+	// new-login screen
+	//
+	// display email and password boxes
+	// forgot password option
+	// -- displays page where you enter email and it sends stuff
+	// MAYBE there's a no-login option for just regular alarms, this would be in another tab
+	//
+	// logged-in screen
+	//
+	// display list of current alarms
+	// -- each of which have edit option and 
+	// then display alarm creation in another "tab"
+	// another tab for account settings
+
+
+	return (
+		<NavigationContainer>
+			<Stack.Navigator initialRouteName="Login">
+				<Stack.Screen name="Login" component={Login} />
+				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+				{/*<Stack.Screen name="Home" component={Home}/>
+				<Stack.Screen name="EditAlarm" component={EditAlarm}/>
+				<Stack.Screen name="ChangePassword" component={ChangePassword}/>
+				<Stack.Screen name="Account" component={Account}/>*/}
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
+};
+
+
+export default App;
