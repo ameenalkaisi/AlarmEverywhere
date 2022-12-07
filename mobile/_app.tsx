@@ -4,7 +4,6 @@ export const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#011627',
-		borderWidth: 25,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
@@ -21,6 +20,7 @@ export const styles = StyleSheet.create({
 		flex: 1,
 		padding: 10,
 		marginLeft: 20,
+		textAlign: "center",
 	},
 	forgot_button: {
 		height: 30,

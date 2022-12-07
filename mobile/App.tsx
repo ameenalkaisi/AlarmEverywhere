@@ -16,8 +16,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ForgotPassword from './pages/ForgotPassword';
 import { RootStackParamList } from './_app';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const queryClient = new QueryClient();
 
 const App = () => {
 	// new-login screen
@@ -37,14 +39,16 @@ const App = () => {
 
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Login">
-				<Stack.Screen name="Login" component={Login} />
-				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-				{/*<Stack.Screen name="Home" component={Home}/>
+			<QueryClientProvider client={queryClient}>
+				<Stack.Navigator initialRouteName="Login">
+					<Stack.Screen name="Login" component={Login} />
+					<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+					{/*<Stack.Screen name="Home" component={Home}/>
 				<Stack.Screen name="EditAlarm" component={EditAlarm}/>
 				<Stack.Screen name="ChangePassword" component={ChangePassword}/>
 				<Stack.Screen name="Account" component={Account}/>*/}
-			</Stack.Navigator>
+				</Stack.Navigator>
+			</QueryClientProvider>
 		</NavigationContainer>
 	);
 };

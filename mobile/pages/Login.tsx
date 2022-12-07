@@ -2,7 +2,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useQuery } from 'react-query';
 import { RootStackParamList, styles } from '../_app';
+import { REACT_APP_DEV_BACKEND_URL } from '@env'
 
 const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ navigation }) => {
 	// new-login screen
@@ -19,27 +21,46 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 	// then display alarm creation in another "tab"
 	// another tab for account settings
 
-	const [password, setPassword] = React.useState("");
-	const [email, setEmail] = React.useState("");
+	const passwordRef = React.useRef<String>();
+	const emailRef = React.useRef<String>();
+	const [stuff, setStuff] = React.useState<String>("");
+
+	const handleSubmit = () => {
+		console.log("hi");
+	}
+
+	const getStuff = async () => {
+		try {
+			const response = await fetch();
+			const val = await response.text();
+			setStuff(val);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	useQuery([''], () => getStuff());
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.inputView}>
 				<TextInput
 					style={styles.TextInput}
-					placeholder="Email."
+					placeholder="Email"
 					placeholderTextColor="#F6F7F8"
-					onChangeText={(email) => setEmail(email)}
+					onChangeText={(email) => emailRef.current = email}
 				/>
 			</View>
+
+			<Text>{stuff}</Text>
 
 			<View style={styles.inputView}>
 				<TextInput
 					style={styles.TextInput}
-					placeholder="Password."
+					placeholder="Password"
 					placeholderTextColor="#F6F7F8"
 					secureTextEntry={true}
-					onChangeText={(password: string) => setPassword(password)}
+					onChangeText={(password) => passwordRef.current = password}
 				/>
 			</View>
 
@@ -48,7 +69,7 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 			</TouchableOpacity>
 
 			<TouchableOpacity style={styles.loginBtn}>
-				<Text>LOGIN</Text>
+				<Text onPress={handleSubmit}>LOGIN</Text>
 			</TouchableOpacity>
 		</View>
 	);
