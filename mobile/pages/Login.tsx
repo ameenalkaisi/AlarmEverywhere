@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 import { RootStackParamList, styles } from '../_app';
-import { REACT_APP_DEV_BACKEND_URL } from '@env'
+import { BACKEND_URL } from '@env'
 
 const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ navigation }) => {
 	// new-login screen
@@ -31,7 +31,7 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 
 	const getStuff = async () => {
 		try {
-			const response = await fetch();
+			const response = await fetch(BACKEND_URL + '/');
 			const val = await response.text();
 			setStuff(val);
 		} catch (error) {
