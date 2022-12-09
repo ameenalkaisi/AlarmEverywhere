@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
 		marginTop: 40,
 		backgroundColor: "#2EC4B6",
 	},
-	loginBtn:
+	btn:
 	{
 		width: "80%",
 		borderRadius: 25,
@@ -51,4 +51,5 @@ export const styles = StyleSheet.create({
 export type RootStackParamList = {
 	Login: undefined,
 	ForgotPassword: undefined,
+	Register: undefined,
 }

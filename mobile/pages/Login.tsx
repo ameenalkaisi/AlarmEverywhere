@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
+import { BACKEND_URL } from '@env';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 import { RootStackParamList, styles } from '../_app';
-import { BACKEND_URL } from '@env'
 
 const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ navigation }) => {
 	// new-login screen
@@ -27,6 +27,10 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 
 	const handleSubmit = () => {
 		console.log("hi");
+	}
+
+	const handleRegister = () => {
+		navigation.push("Register");
 	}
 
 	const getStuff = async () => {
@@ -64,12 +68,16 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 				/>
 			</View>
 
-			<TouchableOpacity>
-				<Text style={styles.forgot_button} onPress={() => navigation.push("ForgotPassword")}>Forgot Password?</Text>
+			<TouchableOpacity onPress={() => navigation.push("ForgotPassword")}>
+				<Text style={styles.forgot_button}>Forgot Password?</Text>
 			</TouchableOpacity>
 
-			<TouchableOpacity style={styles.loginBtn}>
-				<Text onPress={handleSubmit}>LOGIN</Text>
+			<TouchableOpacity style={styles.btn} onPress={handleSubmit}>
+				<Text>LOGIN</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity style={styles.btn} onPress={handleRegister}>
+				<Text>REGISTER</Text>
 			</TouchableOpacity>
 		</View>
 	);

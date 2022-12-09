@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ForgotPassword from './pages/ForgotPassword';
 import { RootStackParamList } from './_app';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Register from './pages/Register';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => {
 				<Stack.Navigator initialRouteName="Login">
 					<Stack.Screen name="Login" component={Login} />
 					<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+					<Stack.Screen name="Register" component={Register} />
 					{/*<Stack.Screen name="Home" component={Home}/>
 				<Stack.Screen name="EditAlarm" component={EditAlarm}/>
 				<Stack.Screen name="ChangePassword" component={ChangePassword}/>
