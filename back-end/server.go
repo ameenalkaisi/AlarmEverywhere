@@ -1,21 +1,22 @@
 package main
 
 import (
+	"AlarmEverywhere/utils"
+	"fmt"
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
-	"os"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type User struct {
 	gorm.Model
 
-	Name     string
-	Email    string
-	Password string
+	Name     string `gorm:"not null"`
+	Email    string `gorm:"not null;unique"`
+	Password string `gorm:"not null"`
 }
 
 type UserSignupRequest struct {
@@ -39,22 +40,13 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	return nil
 }
 
-// note if we make a utils file we should probably move this to there
-func open_db() (*gorm.DB, error) {
-	DATABASE_USERNAME := os.Getenv("MYSQL_USERNAME")
-	DATABASE_PASSWORD := os.Getenv("MYSQL_PASSWORD")
-	DATABASE_NAME := os.Getenv("MYSQL_NAME")
-
-	return gorm.Open(mysql.Open(DATABASE_USERNAME+":"+DATABASE_PASSWORD+"@tcp(127.0.0.1:3306)/"+DATABASE_NAME), &gorm.Config{})
-}
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)
 	}
 
-	db, err := open_db()
+	db, err := utils.OpenDB()
 	if err != nil {
 		panic(err)
 	}
@@ -74,15 +66,33 @@ func main() {
 		signup := new(UserSignupRequest)
 
 		if err = c.Bind(signup); err != nil {
+			fmt.Println(err)
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		if err = c.Validate(signup); err != nil {
+			fmt.Println(err)
 			return err
 		}
 
-		return c.JSON(http.StatusOK, signup)
+		newUser := User{Name: signup.Name, Email: signup.Email, Password: signup.Password}
+		result := db.Create(&newUser)
+
+		var response string
+		if result.Error != nil {
+			response = result.Error.Error()
+		} else {
+			response = "user created"
+		}
+
+		return c.JSON(http.StatusOK, response)
 	})
+
+	/*
+		TODO, set up e-mail verification
+		e.GET("/verify-email/:verification_code", func(c echo.Context) error {
+		})
+	*/
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

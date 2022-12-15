@@ -6,7 +6,9 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 import { RootStackParamList, styles } from '../_app';
 
-const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ navigation }) => {
+const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({
+	navigation,
+}) => {
 	// new-login screen
 	//
 	// display email and password boxes
@@ -17,21 +19,21 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 	// logged-in screen
 	//
 	// display list of current alarms
-	// -- each of which have edit option and 
+	// -- each of which have edit option and
 	// then display alarm creation in another "tab"
 	// another tab for account settings
 
 	const passwordRef = React.useRef<String>();
 	const emailRef = React.useRef<String>();
-	const [stuff, setStuff] = React.useState<String>("");
+	const [stuff, setStuff] = React.useState<String>('');
 
 	const handleSubmit = () => {
-		console.log("hi");
-	}
+		console.log('hi');
+	};
 
 	const handleRegister = () => {
-		navigation.push("Register");
-	}
+		navigation.push('Register');
+	};
 
 	const getStuff = async () => {
 		try {
@@ -41,7 +43,7 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 		} catch (error) {
 			console.error(error);
 		}
-	}
+	};
 
 	useQuery([''], () => getStuff());
 
@@ -52,7 +54,7 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 					style={styles.TextInput}
 					placeholder="Email"
 					placeholderTextColor="#F6F7F8"
-					onChangeText={(email) => emailRef.current = email}
+					onChangeText={email => (emailRef.current = email)}
 				/>
 			</View>
 
@@ -64,11 +66,11 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({ 
 					placeholder="Password"
 					placeholderTextColor="#F6F7F8"
 					secureTextEntry={true}
-					onChangeText={(password) => passwordRef.current = password}
+					onChangeText={password => (passwordRef.current = password)}
 				/>
 			</View>
 
-			<TouchableOpacity onPress={() => navigation.push("ForgotPassword")}>
+			<TouchableOpacity onPress={() => navigation.push('ForgotPassword')}>
 				<Text style={styles.forgot_button}>Forgot Password?</Text>
 			</TouchableOpacity>
 
