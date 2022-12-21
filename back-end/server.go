@@ -2,7 +2,6 @@ package main
 
 import (
 	"AlarmEverywhere/utils"
-	"crypto/tls"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -14,7 +13,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"gopkg.in/gomail.v2"
 	"gorm.io/gorm"
 )
 
@@ -159,35 +157,12 @@ func main() {
 			VerificationCode: encodedRandomCode,
 		}
 		result := db.Create(&newUser)
-
-		verificationLink := fmt.Sprintf("%s/verify-email/%s", os.Getenv("URL"), randomCode)
-
-		// send e-mail to the user to verify
-		message := gomail.NewMessage()
-		message.SetHeader("From", "from@test.com")
-		message.SetHeader("To", newUser.Email)
-		message.SetHeader("Subject", "Verify Your Email for AlarmEverywhere!")
-		message.SetHeader("Content-Type", "text/html; charset=utf-8")
-
-		// todo, change into a formatted e-mail message
-		message.SetBody("text/html", fmt.Sprintf("<a href=%s>Click here to verify your account</a>", verificationLink))
-
-		smtp_port, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-
-		dialer := gomail.NewDialer(os.Getenv("SMTP_HOST"), smtp_port, os.Getenv("SMTP_USERNAME"), os.Getenv("SMTP_PASSWORD"))
-		dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
 		if result.Error != nil {
 			return c.JSON(http.StatusBadRequest, result.Error.Error())
 		}
 
-		if err := dialer.DialAndSend(message); err != nil {
-			fmt.Println(err.Error())
-			return err
+		if err := utils.SendCode(newUser.Email, randomCode); err != nil {
+			return c.JSON(http.StatusInternalServerError, "could not send e-mail")
 		}
 
 		return c.JSON(http.StatusOK, "user created")
@@ -208,6 +183,35 @@ func main() {
 		db.Save(updatedUser)
 
 		return c.JSON(http.StatusOK, "account verified")
+	})
+
+	e.GET("/resend-code:email", func(c echo.Context) error {
+		email := c.Param("email")
+
+		var userToUpdate User
+		result := db.First(&userToUpdate, "email = ?", email)
+		if result.Error != nil {
+			return c.JSON(http.StatusBadRequest, "email never registered under an account")
+		}
+
+		if userToUpdate.Verified == true {
+			return c.JSON(http.StatusBadRequest, "account already verified")
+		}
+
+		randomCode := fmt.Sprintf("%09d", rand.Intn(1000000000))
+		encodedRandomCode := utils.Encode(randomCode)
+
+		userToUpdate.VerificationCode = encodedRandomCode
+		result = db.Save(userToUpdate)
+		if result.Error != nil {
+			return c.JSON(http.StatusInternalServerError, "could not update the verification code, please try again later")
+		}
+
+		if err := utils.SendCode(userToUpdate.Email, encodedRandomCode); err != nil {
+			return c.JSON(http.StatusInternalServerError, "could not send code to the e-mail, please try again later")
+		}
+
+		return c.JSON(http.StatusOK, "verification code changed and successfully sent to e-mail")
 	})
 
 	e.POST("/login", func(c echo.Context) error {
@@ -274,9 +278,9 @@ func main() {
 		user := c.Get("currentUser").(User)
 
 		returnedUser := UserMeResponse{
-			Name:  user.Name,
-			Email: user.Email,
-			Role:  user.Role,
+			Name:     user.Name,
+			Email:    user.Email,
+			Role:     user.Role,
 			Verified: user.Verified,
 		}
 
