@@ -1,7 +1,7 @@
 import { BACKEND_URL } from '@env';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as React from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -31,12 +31,12 @@ const Register: React.FC<
 			email.length == 0 ||
 			password.length == 0
 		) {
-			setPasswordText('Name, e-mail, or/and password is/are empty');
+			setPasswordText('Name, e-mail, or/and password are empty');
 			return;
 		}
 
 		// tell go server about this information
-		await signUpUser(name, email, password);
+		await signUpUser(name, email.toLowerCase().trim(), password);
 	};
 
 	// todo: handle hashing here
@@ -48,15 +48,20 @@ const Register: React.FC<
 				password,
 			})
 			// not sure what the second any is for
-			.then((response: AxiosResponse<string, string>) => {
-				console.log(response.data);
-				if (response.data.indexOf('Duplicate') != -1) {
+			.then((_: AxiosResponse<string, string>) => {
+				// todo: navigate into "user environment"
+				navigation.navigate('VerifyAccount', {
+					emai: emailRef.current ?? '',
+					password: passwordRef.current ?? '', // should always be defined
+				});
+			})
+			.catch((error: Error | AxiosError) => {
+				if (axios.isAxiosError(error)) {
 					setHelpText(
 						'A user has already been created with that e-mail, please go back and tap forgot password',
 					);
 				}
-			})
-			.catch(error => console.log(error));
+			});
 	};
 
 	return (

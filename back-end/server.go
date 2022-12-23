@@ -180,7 +180,9 @@ func main() {
 
 		updatedUser.VerificationCode = ""
 		updatedUser.Verified = true
-		db.Save(updatedUser)
+		if result := db.Save(updatedUser); result.Error != nil {
+			return c.JSON(http.StatusInternalServerError, "could not update to a verified account")
+		}
 
 		return c.JSON(http.StatusOK, "account verified")
 	})

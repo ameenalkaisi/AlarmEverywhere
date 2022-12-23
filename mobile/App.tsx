@@ -18,6 +18,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import { RootStackParamList } from './_app';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Register from './pages/Register';
+import VerifyAccount from './pages/VerifyAccount';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient();
@@ -33,10 +34,10 @@ const App = () => {
 	// logged-in screen
 	//
 	// display list of current alarms
-	// -- each of which have edit option and 
+	// -- each of which have edit option and
 	// then display alarm creation in another "tab"
 	// another tab for account settings
-
+	// todo: add context, and put in isSignedIn and userEmail in or something
 
 	return (
 		<NavigationContainer>
@@ -45,6 +46,7 @@ const App = () => {
 					<Stack.Screen name="Login" component={Login} />
 					<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 					<Stack.Screen name="Register" component={Register} />
+					<Stack.Screen name="VerifyAccount" component={VerifyAccount} />
 					{/*<Stack.Screen name="Home" component={Home}/>
 				<Stack.Screen name="EditAlarm" component={EditAlarm}/>
 				<Stack.Screen name="ChangePassword" component={ChangePassword}/>
@@ -54,6 +56,5 @@ const App = () => {
 		</NavigationContainer>
 	);
 };
-
 
 export default App;

@@ -5,6 +5,7 @@ import { BACKEND_URL } from '@env';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 import { RootStackParamList, styles } from '../_app';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({
 	navigation,
@@ -28,7 +29,25 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({
 	const [stuff, setStuff] = React.useState<String>('');
 
 	const handleSubmit = () => {
-		console.log('hi');
+		axios
+			.post(BACKEND_URL + '/login', {
+				email: emailRef,
+				password: passwordRef,
+			})
+			.then((response: AxiosResponse) => {
+				console.log(response.data);
+			})
+			.catch((error: Error | AxiosError<String, String>) => {
+				if (axios.isAxiosError(error)) {
+					// todo
+					// set some helper text here
+					console.log(error);
+					if (error.response?.data.contains('not verified')) {
+						// go into verify code page
+						console.log(error.response);
+					}
+				}
+			});
 	};
 
 	const handleRegister = () => {
@@ -58,7 +77,7 @@ const Login: React.FC<NativeStackScreenProps<RootStackParamList, 'Login'>> = ({
 				/>
 			</View>
 
-			<Text>{stuff}</Text>
+			<Text>{stuff == '' ? 'None' : stuff}</Text>
 
 			<View style={styles.inputView}>
 				<TextInput
