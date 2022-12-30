@@ -136,9 +136,6 @@ func main() {
 			return err
 		}
 
-		//todo
-		// create random code for the user to make
-		// just make a random 6 digit string, padded with 0s
 		randomCode := fmt.Sprintf("%09d", rand.Intn(1000000000))
 		encodedRandomCode := utils.Encode(randomCode)
 

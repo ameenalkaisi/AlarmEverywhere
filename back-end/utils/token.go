@@ -7,7 +7,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-// todo: make the token yourself
 func GenerateToken(ttl time.Duration, payload interface{}, secretJWTKey string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
