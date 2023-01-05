@@ -5,12 +5,21 @@ import axios from 'axios';
 import * as React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {AppContext} from '../App';
+import AlarmView from '../components/AlarmView';
+import Alarm from '../utils/alarm';
 import {RootStackParamList, styles} from '../_app';
 
 const Home: React.FC<
   NativeStackScreenProps<RootStackParamList, 'Home'>
 > = () => {
   const contextValue = React.useContext(AppContext);
+
+  // eventually fetch it from the database
+  // i dont think theres a need to place it in async storage, just keep it in memory
+  // but we'll see depending on performance
+  //    might have to be just for front-end stuff
+  const [alarms, setAlarms] = React.useState<Alarm[]>([new Alarm(new Date())]);
+
   function handleLogout() {
     axios
       .get(BACKEND_URL + '/logout')
@@ -29,6 +38,20 @@ const Home: React.FC<
     <View style={styles.container}>
       <Text>Alarms</Text>
       {/* TODO: alarms here -- use the alarms thing */}
+      {alarms.map((alarm, index) => (
+        <TouchableOpacity
+          onPress={() => {
+            let newAlarms = alarms.map(alarm => alarm);
+
+            // todo, set onclick to go into "alarm edit" view
+            newAlarms[index].date = new Date();
+
+            setAlarms(newAlarms);
+          }}>
+          <AlarmView alarm={alarm} />
+        </TouchableOpacity>
+      ))}
+
       <TouchableOpacity style={styles.btn}>
         <Text onPress={handleLogout}>BruH</Text>
       </TouchableOpacity>
