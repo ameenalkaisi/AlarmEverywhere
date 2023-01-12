@@ -1,5 +1,6 @@
 import {Dispatch, SetStateAction} from 'react';
 import {StyleSheet} from 'react-native';
+import Alarm from './utils/alarm';
 
 export const styles = StyleSheet.create({
   container: {
@@ -53,6 +54,9 @@ export type RootStackParamList = {
   Register: undefined;
   VerifyAccount: {email: string; password: string};
   Home: {email: string};
+  EditAlarm: {
+    alarmIndex: number;
+  };
 };
 
 export interface AppContextProps {
@@ -61,4 +65,7 @@ export interface AppContextProps {
 
   cookie: String | null;
   setCookie: Dispatch<SetStateAction<String | null>>;
+
+  alarms: Alarm[];
+  setAlarms: Dispatch<SetStateAction<Alarm[]>>;
 }

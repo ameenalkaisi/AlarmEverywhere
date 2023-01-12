@@ -12,6 +12,7 @@ export enum AlarmRecurrence {
   HOURLY,
   DAILY,
   WEEKLY,
+  BIWEEKLY,
   MONTHLY,
   YEARLY,
   NONE,

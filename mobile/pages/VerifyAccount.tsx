@@ -35,7 +35,9 @@ const CELL_COUNT = 9;
 
 const VerifyAccount: React.FC<
   NativeStackScreenProps<RootStackParamList, 'VerifyAccount'>
-> = ({}) => {
+> = ({route}) => {
+  //todo: if route.params are set then use them
+
   const [value, setValue] = React.useState('');
   const [helpText, seHelperText] = React.useState('');
 

@@ -20,11 +20,26 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import Register from './pages/Register';
 import VerifyAccount from './pages/VerifyAccount';
 import Home from './pages/Home';
+import EditAlarm from './pages/EditAlarm';
+import Alarm from './utils/alarm';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient();
 
-export const AppContext = React.createContext<AppContextProps | null>(null);
+export const AppContext = React.createContext<AppContextProps>({
+  email: null,
+  setEmail: function (_: React.SetStateAction<String | null>): void {
+    throw new Error('Called when functions not loaded');
+  },
+  cookie: null,
+  setCookie: function (_: React.SetStateAction<String | null>): void {
+    throw new Error('Called when functions not loaded');
+  },
+  alarms: [],
+  setAlarms: function (_: React.SetStateAction<Alarm[]>): void {
+    throw new Error('Called when functions not loaded');
+  },
+});
 
 const App = () => {
   // new-login screen
@@ -42,9 +57,13 @@ const App = () => {
   // another tab for account settings
   const [email, setEmail] = React.useState<String | null>(null);
   const [cookie, setCookie] = React.useState<String | null>(null);
+  const [alarms, setAlarms] = React.useState<Alarm[]>([
+    new Alarm(new Date()),
+    new Alarm(new Date()),
+  ]);
   const contextValue = React.useMemo(
-    () => ({email, setEmail, cookie, setCookie}),
-    [email, cookie],
+    () => ({email, setEmail, cookie, setCookie, alarms, setAlarms}),
+    [email, cookie, alarms],
   );
 
   return (
@@ -63,7 +82,10 @@ const App = () => {
                 <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
               </>
             ) : (
-              <Stack.Screen name="Home" component={Home} />
+              <>
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="EditAlarm" component={EditAlarm} />
+              </>
             )}
             {/*
             <Stack.Screen name="Home" component={Home}/>
