@@ -172,7 +172,6 @@ func main() {
 		encodedRandomCode := utils.Encode(randomCode)
 
 		hashedPassword, err := utils.HashPassword(signup.Password)
-
 		if err != nil {
 			return err
 		}
