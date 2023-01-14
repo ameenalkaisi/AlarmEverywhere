@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Text} from 'react-native';
-import Alarm from '../utils/alarm';
+import Alarm, {AlarmRecurrence} from '../utils/alarm';
 
 const AlarmView: React.FC<{
   mini?: boolean;
@@ -9,8 +9,9 @@ const AlarmView: React.FC<{
   let curDate = new Date(alarm.date);
   return (
     <Text>
-      {mini ? 'true' : 'false'} -- {alarm.recurrence} -- {curDate.getDate()}{' '}
-      {curDate.getHours()}:{curDate.getMinutes()}:{curDate.getSeconds()}
+      {mini ? 'true' : 'false'} -- {AlarmRecurrence[alarm.recurrence]} --{' '}
+      {curDate.getDate()} {curDate.getHours()}:{curDate.getMinutes()}:
+      {curDate.getSeconds()}
     </Text>
   );
 };

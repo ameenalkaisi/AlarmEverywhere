@@ -61,12 +61,16 @@ type UserMeResponse struct {
 }
 
 type UserAlarmRequest struct {
-	Alarms []AlarmType
+	Alarms []AlarmType `json:""`
 }
 
 type AlarmType struct {
-	DateString string
-	Recurrence string
+	DateString string `json:"date"`
+	Recurrence string `json:"recurrence"`
+}
+
+type AlarmsResponse struct {
+	Alarms []AlarmType `json:"alarms"`
 }
 
 // seems like we can use this validator for typed struct we make
@@ -200,13 +204,27 @@ func main() {
 		var alarms []Alarm
 
 		curUser := c.Get("currentUser").(User)
-		if result := db.Table("alarms").Select("alarms.date, alarms.recurrence").Joins("JOIN user_alarms on user_alarms.alarm_id = alarms.id").Where("user_id = ?", curUser.ID).Find(&alarms); result.Error != nil {
+		if result := db.Table("alarms").Select("alarms.date, alarms.recurrence").
+			Joins("JOIN user_alarms on user_alarms.alarm_id = alarms.id").
+			Where("user_id = ?", curUser.ID).Find(&alarms); result.Error != nil {
 			fmt.Println(result.Error.Error())
 
 			return c.JSON(http.StatusInternalServerError, "could not find user's alarms")
 		}
 
-		return c.JSON(http.StatusOK, alarms)
+		formattedAlarms := make([]AlarmType, 0, len(alarms))
+		for _, alarm := range alarms {
+			formattedAlarms = append(formattedAlarms, AlarmType{
+				DateString: alarm.Date.Format("2006-01-01T00:00:00.000+00:00"),
+				Recurrence: alarm.Recurrence,
+			})
+		}
+
+		response := AlarmsResponse{
+			Alarms: formattedAlarms,
+		}
+
+		return c.JSON(http.StatusOK, response)
 	}, GetUser)
 
 	// this always sets them all at once
@@ -229,7 +247,7 @@ func main() {
 
 		userAlarms := make([]UserAlarm, 0, len(alarmRequest.Alarms))
 		for _, alarm := range alarmRequest.Alarms {
-			date, err := time.Parse("2006-01-02T15:04:05-0700", alarm.DateString)
+			date, err := time.Parse("2006-01-02T15:04:05.000Z", alarm.DateString)
 			if err != nil {
 				fmt.Println(err.Error())
 				return c.JSON(http.StatusBadRequest, "format of date is incorrect")
