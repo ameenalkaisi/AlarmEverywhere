@@ -43,7 +43,7 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       });
   }
 
-  function syncAlarmsWithServer() {
+  function sendAlarmsToServer() {
     let sentAlarms = alarms.map(alarm => {
       // 2006-01-02T15:04:05-0700
       return {
@@ -69,7 +69,7 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       });
   }
 
-  const getAlarms = async () => {
+  const getAlarmsFromServer = async () => {
     axios
       .get(BACKEND_URL + '/alarms', {
         headers: {
@@ -98,7 +98,7 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       });
   };
 
-  useQuery('alarms', getAlarms);
+  useQuery('alarms', getAlarmsFromServer);
 
   return (
     <View style={styles.container}>
@@ -121,7 +121,7 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}>
-        <Text onPress={syncAlarmsWithServer}>Sync</Text>
+        <Text onPress={sendAlarmsToServer}>Sync</Text>
       </TouchableOpacity>
     </View>
   );
