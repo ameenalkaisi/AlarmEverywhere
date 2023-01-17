@@ -5,16 +5,16 @@ import {AppContext} from '../App';
 import Alarm, {AlarmRecurrence} from '../utils/alarm';
 import {RootStackParamList, styles} from '../_app';
 
+// if alarmIndex == -1, then it is create mode
 const EditAlarm: React.FC<
   NativeStackScreenProps<RootStackParamList, 'EditAlarm'>
 > = ({route, navigation}) => {
-  // maybe if route.params.alarmIndex is null, then it is a create page, otherwise it is an edit page
   const {alarms, setAlarms} = React.useContext(AppContext);
 
   // initalized to null if on create mode, otherwise set to original alarm
   const [dateText, setDateText] = React.useState<string>(
     route.params.alarmIndex == -1
-      ? ''
+      ? new Date().toString()
       : alarms[route.params.alarmIndex].date.toString(),
   );
 
