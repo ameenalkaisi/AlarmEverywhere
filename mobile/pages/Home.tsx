@@ -1,23 +1,14 @@
 import {BACKEND_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios from 'axios';
 import * as React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {useMutation, useQuery} from 'react-query';
+import {useQuery} from 'react-query';
 import {AppContext} from '../App';
 import AlarmView from '../components/AlarmView';
-import Alarm, {AlarmRecurrence} from '../utils/alarm';
+import {getAlarmsFromServer, saveAlarmsToServer} from '../utils/server';
 import {RootStackParamList, styles} from '../_app';
-
-interface AlarmsResponse {
-  alarms: AlarmResponse[];
-}
-
-interface AlarmResponse {
-  date: string;
-  recurrence: string;
-}
 
 const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
   navigation,
@@ -43,62 +34,9 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       });
   }
 
-  function sendAlarmsToServer() {
-    let sentAlarms = alarms.map(alarm => {
-      // 2006-01-02T15:04:05-0700
-      return {
-        date: alarm.date.toISOString(),
-        recurrence: AlarmRecurrence[alarm.recurrence],
-      };
-    });
-    console.log(JSON.stringify(sentAlarms));
-    axios
-      .post(
-        BACKEND_URL + '/alarms/create',
-        {
-          alarms: sentAlarms,
-        },
-        {
-          headers: {
-            Cookie: cookie?.toString(),
-          },
-        },
-      )
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  const getAlarmsFromServer = async () => {
-    axios
-      .get(BACKEND_URL + '/alarms', {
-        headers: {
-          Cookie: cookie?.toString(),
-        },
-      })
-      .then(({data: {alarms}}: AxiosResponse<AlarmsResponse, any>) => {
-        setAlarms(
-          alarms.map(alarm => {
-            let recurrence =
-              AlarmRecurrence[alarm.recurrence as keyof typeof AlarmRecurrence];
-            let dateNumber = Date.parse(alarm.date);
-
-            if (isNaN(dateNumber)) {
-              console.log("coudln't parse date");
-            }
-            let date = new Date(dateNumber);
-
-            return new Alarm(date, recurrence);
-          }),
-        );
-      })
-      .catch((error: AxiosError<String, any>) => {
-        console.log(error.toJSON());
-        handleLogout();
-      });
-  };
-
-  useQuery('alarms', getAlarmsFromServer);
+  useQuery('alarms', async () => {
+    setAlarms(await getAlarmsFromServer(cookie ?? '', handleLogout));
+  });
 
   return (
     <View style={styles.container}>
@@ -121,7 +59,23 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}>
-        <Text onPress={sendAlarmsToServer}>Sync</Text>
+        <Text
+          onPress={() => {
+            saveAlarmsToServer(alarms, cookie ?? '');
+          }}>
+          Sync
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.btn}>
+        <Text
+          onPress={() => {
+            navigation.push('EditAlarm', {
+              alarmIndex: -1,
+            });
+          }}>
+          New Alarm
+        </Text>
       </TouchableOpacity>
     </View>
   );
