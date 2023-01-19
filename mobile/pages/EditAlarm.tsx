@@ -1,6 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {View, TextInput, Button} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {AppContext} from '../App';
 import Alarm, {AlarmRecurrence} from '../utils/alarm';
 import {RootStackParamList, styles} from '../_app';
@@ -12,10 +13,10 @@ const EditAlarm: React.FC<
   const {alarms, setAlarms} = React.useContext(AppContext);
 
   // initalized to null if on create mode, otherwise set to original alarm
-  const [dateText, setDateText] = React.useState<string>(
+  const [date, setDate] = React.useState<Date>(
     route.params.alarmIndex == -1
-      ? new Date().toString()
-      : alarms[route.params.alarmIndex].date.toString(),
+      ? new Date()
+      : alarms[route.params.alarmIndex].date,
   );
 
   const [recur, setRecur] = React.useState<AlarmRecurrence>(
@@ -26,20 +27,12 @@ const EditAlarm: React.FC<
 
   return (
     <View style={styles.container}>
-      <TextInput onChangeText={setDateText}>{dateText}</TextInput>
+      <DatePicker date={date} onDateChange={setDate} />
       {/* todo: alarm recurrence input */}
       <Button
         title="Submit"
         onPress={() => {
-          // verify input first
-          if (isNaN(Date.parse(dateText))) {
-            // todo: set helper text
-
-            console.log("can't parse date");
-            return;
-          }
-
-          let newAlarm = new Alarm(new Date(Date.parse(dateText)), recur);
+          let newAlarm = new Alarm(date, recur);
 
           let newAlarms = alarms.slice();
 

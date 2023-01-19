@@ -11,7 +11,6 @@ export interface AlarmResponse {
   recurrence: string;
 }
 
-// todo: refactor so that they are all kept in here
 export const getAlarmsFromServer = async (
   cookie: String,
   onError: (error: any) => void = _ => {},

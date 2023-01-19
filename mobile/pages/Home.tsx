@@ -55,10 +55,6 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       ))}
 
       <TouchableOpacity style={styles.btn}>
-        <Text onPress={handleLogout}>BruH</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.btn}>
         <Text
           onPress={() => {
             saveAlarmsToServer(alarms, cookie ?? '');
@@ -76,6 +72,10 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
           }}>
           New Alarm
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.btn}>
+        <Text onPress={handleLogout}>Log out</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,18 +1,20 @@
 import * as React from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import Alarm, {AlarmRecurrence} from '../utils/alarm';
 
 const AlarmView: React.FC<{
   mini?: boolean;
   alarm: Alarm;
 }> = ({mini, alarm}) => {
-  let curDate = new Date(alarm.date);
   return (
-    <Text>
-      {mini ? 'true' : 'false'} -- {AlarmRecurrence[alarm.recurrence]} --{' '}
-      {curDate.getDate()} {curDate.getHours()}:{curDate.getMinutes()}:
-      {curDate.getSeconds()}
-    </Text>
+    <View style={{flexDirection: 'row'}}>
+      {/* todo, set a view up that user can't change */}
+      <DatePicker date={alarm.date} style={{height: 50}} />
+      <Text>
+        {mini ? 'true' : 'false'} -- {AlarmRecurrence[alarm.recurrence]}
+      </Text>
+    </View>
   );
 };
 
