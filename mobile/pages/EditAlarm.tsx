@@ -1,6 +1,7 @@
+import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {View, TextInput, Button} from 'react-native';
+import {View, Button} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {AppContext} from '../App';
 import Alarm, {AlarmRecurrence} from '../utils/alarm';
@@ -19,6 +20,7 @@ const EditAlarm: React.FC<
       : alarms[route.params.alarmIndex].date,
   );
 
+  // todo, set up input for recurrence mode
   const [recur, setRecur] = React.useState<AlarmRecurrence>(
     route.params.alarmIndex == -1
       ? AlarmRecurrence.NONE
@@ -28,7 +30,20 @@ const EditAlarm: React.FC<
   return (
     <View style={styles.container}>
       <DatePicker date={date} onDateChange={setDate} />
-      {/* todo: alarm recurrence input */}
+      <Picker
+        selectedValue={recur}
+        onValueChange={(itemValue, _) => {
+          setRecur(itemValue);
+        }}
+        style={{width: '80%'}}>
+        <Picker.Item label="HOURLY" value={AlarmRecurrence.HOURLY} />
+        <Picker.Item label="DAILY" value={AlarmRecurrence.DAILY} />
+        <Picker.Item label="WEEKLY" value={AlarmRecurrence.WEEKLY} />
+        <Picker.Item label="BIWEEKLY" value={AlarmRecurrence.BIWEEKLY} />
+        <Picker.Item label="MONTHLY" value={AlarmRecurrence.MONTHLY} />
+        <Picker.Item label="YEARLY" value={AlarmRecurrence.YEARLY} />
+        <Picker.Item label="NONE" value={AlarmRecurrence.NONE} />
+      </Picker>
       <Button
         title="Submit"
         onPress={() => {
