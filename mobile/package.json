@@ -21,6 +21,7 @@
     "react-native-confirmation-code-field": "^7.3.1",
     "react-native-date-picker": "^4.2.6",
     "react-native-dotenv": "^3.4.2",
+    "react-native-push-notification": "^8.1.1",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.18.2",
     "react-native-windows": "0.70.6",
