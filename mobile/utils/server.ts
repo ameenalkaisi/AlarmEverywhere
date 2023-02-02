@@ -29,7 +29,7 @@ export const getAlarmsFromServer = async (
         let dateNumber = Date.parse(alarm.date);
 
         if (isNaN(dateNumber)) {
-          console.log("coudln't parse date");
+          console.log("couldn't parse date");
         }
         let date = new Date(dateNumber);
         return new Alarm(date, recurrence);
