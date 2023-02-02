@@ -215,7 +215,7 @@ func main() {
 		formattedAlarms := make([]AlarmType, 0, len(alarms))
 		for _, alarm := range alarms {
 			formattedAlarms = append(formattedAlarms, AlarmType{
-				DateString: alarm.Date.Format("2006-01-01T00:00:00.000+00:00"),
+				DateString: alarm.Date.Format(time.RFC1123Z),
 				Recurrence: alarm.Recurrence,
 			})
 		}
