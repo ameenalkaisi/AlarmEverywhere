@@ -43,27 +43,28 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
     // probably delete all alarms, then recreate them
     PushNotification.cancelAllLocalNotifications();
     alarms.forEach((alarm: Alarm) => {
+      // todo: set an alarming sound to play, use soundName property
+      // make sure to add to proper location set in the docs
       const newNotification: PushNotificationScheduleObject = {
         channelId: 'alarm_everywhere_channel',
         date: alarm.date,
 
         playSound: true,
         // vibration: 1500,
-        autoCancel: false,
-        visibility: "public",
-        onlyAlertOnce: false,
+        visibility: 'public',
+        repeatType: 'minute',
         allowWhileIdle: true,
         title: 'Alarm!',
         message: 'Your alarm is up!',
       };
 
-      console.log('scheduling: ' + newNotification.date);
       PushNotification.localNotificationSchedule(newNotification);
     });
 
-    PushNotification.getScheduledLocalNotifications(notifs => {
-      console.log(notifs);
-    });
+    // for testing
+    // PushNotification.getScheduledLocalNotifications(notifs => {
+    //   console.log(notifs);
+    // });
   }
 
   useQuery('alarms', async () => {

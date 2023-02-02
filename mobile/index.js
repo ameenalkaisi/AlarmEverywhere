@@ -12,6 +12,11 @@ PushNotifications.configure({
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
     console.log('NOTIFICATION:', notification);
+    // when the user clicks on the notification, then, delete the alarm
+    if (notification.userInteraction === true) {
+      // cancel the alarm
+      PushNotifications.cancelLocalNotification(notification.id);
+    }
 
     // process the notification
 
@@ -35,9 +40,9 @@ PushNotifications.channelExists('alarm_everywhere_channel', exists => {
       created => console.log(`create channel returned ${created}`),
     );
   else
-    PushNotifications.channelBlocked('alarm_everywhere_channel', blocked =>
-      console.log('blocked: ' + blocked),
-    );
+    PushNotifications.channelBlocked('alarm_everywhere_channel', blocked => {
+      if (blocked) console.log('channel is blocked');
+    });
 });
 
 //PushNotifications.requestPermissions();
