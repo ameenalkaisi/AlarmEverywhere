@@ -9,6 +9,10 @@ import {AppContext} from '../App';
 import AlarmView from '../components/AlarmView';
 import {getAlarmsFromServer, saveAlarmsToServer} from '../utils/server';
 import {RootStackParamList, styles} from '../_app';
+import PushNotification, {
+  PushNotificationScheduleObject,
+} from 'react-native-push-notification';
+import Alarm from '../utils/alarm';
 
 const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
   navigation,
@@ -32,6 +36,34 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       .catch(error => {
         console.log(error);
       });
+  }
+
+  // todo, put this function in a notification.ts under utils
+  function syncToLocal() {
+    // probably delete all alarms, then recreate them
+    PushNotification.cancelAllLocalNotifications();
+    alarms.forEach((alarm: Alarm) => {
+      const newNotification: PushNotificationScheduleObject = {
+        channelId: 'alarm_everywhere_channel',
+        date: alarm.date,
+
+        playSound: true,
+        // vibration: 1500,
+        autoCancel: false,
+        visibility: "public",
+        onlyAlertOnce: false,
+        allowWhileIdle: true,
+        title: 'Alarm!',
+        message: 'Your alarm is up!',
+      };
+
+      console.log('scheduling: ' + newNotification.date);
+      PushNotification.localNotificationSchedule(newNotification);
+    });
+
+    PushNotification.getScheduledLocalNotifications(notifs => {
+      console.log(notifs);
+    });
   }
 
   useQuery('alarms', async () => {
@@ -72,6 +104,10 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
           }}>
           New Alarm
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.btn}>
+        <Text onPress={syncToLocal}> Sync Local Alarms </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}>
