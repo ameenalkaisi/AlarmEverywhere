@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AlarmEverywhere</string>
+    <string name="default_notification_channel_id">alarm_everywhere_channel</string>
 </resources>
