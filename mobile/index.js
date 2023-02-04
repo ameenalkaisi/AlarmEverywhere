@@ -26,23 +26,23 @@ PushNotifications.configure({
   requestPermissions: Platform.OS === 'ios',
 });
 
-PushNotifications.channelExists('alarm_everywhere_channel', exists => {
-  if (!exists)
-    PushNotifications.createChannel(
-      {
-        channelId: 'alarm_everywhere_channel',
-        channelName: 'AlarmEverywhere Channel',
-        channelDescription:
-          'Channel for sending alarms form the AlarmEverywhere application',
-        playSound: true,
-        vibrate: true,
-      },
-      created => console.log(`create channel returned ${created}`),
-    );
-  else
-    PushNotifications.channelBlocked('alarm_everywhere_channel', blocked => {
-      if (blocked) console.log('channel is blocked');
-    });
+// for testing
+//PushNotifications.deleteChannel('alarm_everywhere_channel');
+PushNotifications.createChannel(
+  {
+    channelId: 'alarm_everywhere_channel',
+    channelName: 'AlarmEverywhere Channel',
+    channelDescription:
+      'Channel for sending alarms form the AlarmEverywhere application',
+    soundName: 'alarm_digital_clock.mp3',
+    playSound: true,
+    vibrate: true,
+  },
+  created => console.log(`create channel returned ${created}`),
+);
+
+PushNotifications.channelBlocked('alarm_everywhere_channel', blocked => {
+  if (blocked) console.log('channel is blocked');
 });
 
 //PushNotifications.requestPermissions();

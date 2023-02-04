@@ -9,10 +9,7 @@ import {AppContext} from '../App';
 import AlarmView from '../components/AlarmView';
 import {getAlarmsFromServer, saveAlarmsToServer} from '../utils/server';
 import {RootStackParamList, styles} from '../_app';
-import PushNotification, {
-  PushNotificationScheduleObject,
-} from 'react-native-push-notification';
-import Alarm from '../utils/alarm';
+import {saveAlarmsToPhone} from '../utils/notification';
 
 const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
   navigation,
@@ -36,35 +33,6 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       .catch(error => {
         console.log(error);
       });
-  }
-
-  // todo, put this function in a notification.ts under utils
-  function syncToLocal() {
-    // probably delete all alarms, then recreate them
-    PushNotification.cancelAllLocalNotifications();
-    alarms.forEach((alarm: Alarm) => {
-      // todo: set an alarming sound to play, use soundName property
-      // make sure to add to proper location set in the docs
-      const newNotification: PushNotificationScheduleObject = {
-        channelId: 'alarm_everywhere_channel',
-        date: alarm.date,
-
-        playSound: true,
-        // vibration: 1500,
-        visibility: 'public',
-        repeatType: 'minute',
-        allowWhileIdle: true,
-        title: 'Alarm!',
-        message: 'Your alarm is up!',
-      };
-
-      PushNotification.localNotificationSchedule(newNotification);
-    });
-
-    // for testing
-    // PushNotification.getScheduledLocalNotifications(notifs => {
-    //   console.log(notifs);
-    // });
   }
 
   useQuery('alarms', async () => {
@@ -108,7 +76,7 @@ const Home: React.FC<NativeStackScreenProps<RootStackParamList, 'Home'>> = ({
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}>
-        <Text onPress={syncToLocal}> Sync Local Alarms </Text>
+        <Text onPress={() => saveAlarmsToPhone(alarms)}>Sync Local Alarms</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}>
