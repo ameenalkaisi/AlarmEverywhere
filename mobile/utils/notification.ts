@@ -20,7 +20,7 @@ export function saveAlarmsToPhone(alarms: Alarm[]): void {
       title: 'Alarm!',
       message: 'Your alarm is up!',
 
-      soundName: 'clocksounds.mp3',
+      soundName: 'alarm_digital_clock.mp3',
       playSound: true,
       vibrate: true,
       repeatType: 'minute',
